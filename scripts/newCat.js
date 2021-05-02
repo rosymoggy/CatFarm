@@ -24,14 +24,19 @@ var catSetting = {
 
 class Cat {
   constructor() {
+  	this.code = "";
+
     var r = Math.floor(Math.random() * 100 % catSetting.bodyColorArray.length);
     this.bodyColor = catSetting.bodyColorArray[r];
+    this.code += r.toString() + "-";
 
     r = Math.floor(Math.random() * 100 % catSetting.kindArray.length);
     this.kind = catSetting.kindArray[r];
+    this.code += r.toString() + "-";
 
     r = Math.floor(Math.random() * 100 % catSetting.eyeColorArray.length);
     this.leftEyeColor = catSetting.eyeColorArray[r];
+    this.code += r.toString() + "-";
 
     r = Math.floor(Math.random() * 100);
     if(r % 20 == 1) {
@@ -45,6 +50,7 @@ class Cat {
     } else {
     	this.rightEyeColor = this.leftEyeColor;
     }
+    this.code += r.toString();
 
     this.htmlId = Cat.$prefix + Cat.$count;
     Cat.$count = Cat.$count + 1;
@@ -64,6 +70,10 @@ class Cat {
   getHtmlId() {
   	return this.htmlId;
   }
+
+  getCode() {
+  	return this.code;
+  }
 }
 
 /**
@@ -74,7 +84,7 @@ var createCount = 3;
 /**
  * 創造貓咪
  */
-function createCat(){
+function createCat() {
 	catArray = [];
 
 	for(var i = 0; i < createCount; i++) {
@@ -95,7 +105,8 @@ function showCat(targetHtmlId) {
 			jqTarget.append(
 				"<div class='radio'>" +
 				"<label for='" + item.getHtmlId() + "'>" + 
-				"<input id='" + item.getHtmlId() + "' type='radio' name='" + Cat.$prefix + "' />" + item.info + 
+				"<input id='" + item.getHtmlId() + "' type='radio' name='" + Cat.$prefix + "' value='" + item.getCode() + "' />" + 
+				"<span>" + item.info + "</span>" +
 				"</label>" +
 				"</div>"
 			);
@@ -109,18 +120,29 @@ function showCat(targetHtmlId) {
  * @param {string} newHtmlId - 新資料 html id
  */
 function switchCat(oldHtmlId, newHtmlId) {
-	var jqTarget = $("[id='" + targetHtmlId + "']");
-	if(jqTarget.length > 0) {
-		jqTarget.empty();
-		$.each(catArray, function(idx, item) {
-			jqTarget.append(
-				"<div class='radio'>" +
-				"<label for='" + item.getHtmlId() + "'>" + 
-				"<input id='" + item.getHtmlId() + "' type='radio' name='" + Cat.$prefix + "' />" + item.info + 
-				"</label>" +
+	var jqOld = $("[id='" + oldHtmlId + "']");
+	var jqNew = $("[id='" + newHtmlId + "']");
+	var jqChecked = jqNew.find("input[type=radio]:checked");
+	if(jqOld.length > 0 && jqNew.length > 0) {
+		if(jqChecked.length > 0) {
+			var catText = jqChecked.parent().find("span").text();
+			var catCode = jqChecked.val();
+
+			var idx = jqOld.find(".history").length + 1;
+			jqOld.append(
+				"<div id='History" + idx + "' class='history'>" +
+				"你的第" + idx + "隻貓咪是："　+ catText + 
+				"<input type='hidden' name='CatCode' value='" + catCode + "' />" +
 				"</div>"
 			);
-		});
+			jqOld.show();
+			jqNew.empty();
+
+			createCat();
+			showCat(newHtmlId);
+		} else {
+			alert("請選擇一隻貓咪！");
+		}
 	}
 }
 
