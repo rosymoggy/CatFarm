@@ -1,0 +1,20 @@
+body {
+	background-color: #27AE60;
+	font-family: 'Noto Sans TC', sans-serif;
+}
+
+.title {
+	margin-top: 1em;
+}
+
+.center {
+	text-align: center;
+}
+
+.hide {
+	display: none;
+}
+
+.text-danger {
+	color: #AA0000;
+}
