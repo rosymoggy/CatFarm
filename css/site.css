@@ -30,6 +30,10 @@ body {
 	color: #AA0000;
 }
 
+.cat-action {
+	background-color: #AAAA00;
+}
+
 .line {
 	background-color: #AAA;
 	border: solid 1px #DDD;
@@ -43,4 +47,26 @@ body {
 .row .box {
 	padding: 10px 20px 20px 10px;
 	border: solid 1px #058C40;
+}
+
+.input-group {
+	margin-left: auto;
+	margin-right: auto;
+	max-width: 360px;
+}
+
+.table td, .table th {
+  text-align: center;
+}
+
+.table {
+	margin-left: auto;
+	margin-right: auto;
+	width: 70%;
+}
+
+@media screen and (max-width: 1024px) {
+	.table {
+		width: 100%;
+	}
 }

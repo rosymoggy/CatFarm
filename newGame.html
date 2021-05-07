@@ -15,17 +15,37 @@
         <button type="button" class="btn btn-default btn-sm" onclick="changeForm('index.html');">
           <span class="glyphicon glyphicon-home"></span> Home
         </button>
+        <button id="RefreshBtn" type="button" class="btn btn-danger btn-sm hide" onclick="changeForm('newGame.html');">
+          <span class="glyphicon glyphicon-refresh"></span> 重新開始
+        </button>
+        <div class="line"></div>
+		<h3>你的目標貓咪：</h3><h4 id="TargetCat"></h4>
         <div id="CurrentLine" class="line hide"></div>
 		<div id="CurrentBox" class="row hide">
-			<div class="col-sm-1">　</div>
-			<div id="FirstCat" class="col-sm-5 box">　</div>
-			<div id="SecondCat" class="col-sm-5 box">　</div>
-			<div class="col-sm-1">　</div>
+			<div class="col-sm-12"><h3>你目前擁有的貓咪</h3></div>
+			<div class="col-sm-2">　</div>
+			<div class="col-sm-8 cat-box"></div>
+			<div class="col-sm-2">　</div>
+			<div class="col-sm-12 cat-mate hide">
+				<button type="button" class="btn btn-default btn-sm" onclick="mateCat('NewList');">
+					<span class="glyphicon glyphicon-ok"></span> 生小貓！
+				</button>
+			</div>
+			<div class="col-sm-12 toolbox hide">
+				<div class="line"></div>
+				<h4>道具盒</h4>
+				<button type="button" class="btn btn-danger btn-sm cat-clear" onclick="clearCat('NewList');">
+					<span class="glyphicon glyphicon-trash"></span> 送走所有貓咪！
+				</button>
+				<button type="button" class="btn btn-warning btn-sm cat-change" onclick="changeCat('NewList');">
+					<span class="glyphicon glyphicon-refresh"></span> 隨機重置一隻貓咪(重置後必為異性)！
+				</button>
+			</div>
 		</div>
         <div class="line"></div>
 		<h3>請選擇一隻貓咪</h3>
 		<div id="NewList"></div>
-        <button type="button" class="btn btn-default btn-sm" onclick="switchCat('OldList', 'NewList');">
+        <button id="SwitchBtn" type="button" class="btn btn-default btn-sm" onclick="switchCat('NewList');">
           <span class="glyphicon glyphicon-ok"></span> 選好了！
         </button>
         <div class="line"></div>
@@ -41,7 +61,6 @@
 		$(document).ready(function(){
 			twinkling("Subject", 500);
 
-			createCat();
 			showCat("NewList");
 		});
 	</script>

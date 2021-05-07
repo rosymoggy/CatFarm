@@ -21,7 +21,7 @@ function twinkling(targetHtmlId, ms, currentIndex) {
 		}
 
 		// 閃爍
-		if(!currentIndex || currentIndex > text.length) {
+		if(!currentIndex || currentIndex > text.length - 1) {
 			currentIndex = 0;
 		}
 		var beforeText = text.substr(0, currentIndex);
@@ -35,7 +35,7 @@ function twinkling(targetHtmlId, ms, currentIndex) {
 }
 
 /**
- * 閃爍
+ * 切換連結
 * @param {string} url - 連結
  */
 function changeForm(url) {

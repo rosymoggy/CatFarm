@@ -14,7 +14,47 @@
 		<hr />
 		<button type="button" class="btn btn-default" onclick="changeForm('newGame.html');">新生貓咪</button>
 		<button type="button" class="btn btn-default" onclick="changeForm('oldGame.html');">繼承貓咪</button>
-		<button type="button" class="btn btn-default" onclick="changeForm('info.html');">貓咪資訊</button>
+		<button type="button" class="btn btn-default" onclick="changeForm('info.html');">貓咪的所有屬性</button>
+        <div class="line"></div>
+		<table class="table table-hover table-bordered center">
+			<tbody>
+				<tr class="info">
+					<td colspan="2">遊戲規則</td>
+				</tr>
+				<tr class="active left">
+					<td>1</td>
+					<td>最多只能同時擁有<span class="text-danger">四隻</span>未生育過的新貓咪。</td>
+				</tr>
+				<tr class="active left">
+					<td>2</td>
+					<td>只能選擇<span class="text-danger">一公一母</span>生小貓咪。</td>
+				</tr>
+				<tr class="active left">
+					<td>3</td>
+					<td>不論公母，一隻貓咪都只能配種<span class="text-danger">2次</span>，超過<span class="text-danger">2次</span>會自己離開。</td>
+				</tr>
+				<tr class="active left">
+					<td>4</td>
+					<td>特殊情況下，貓咪配種後生下的小貓，<span class="text-danger">有可能</span>突然離開。</td>
+				</tr>
+				<tr class="active left">
+					<td>5</td>
+					<td>困難模式中，每回合貓咪<span class="text-danger">有低機率</span>突然離開。</td>
+				</tr>
+				<tr class="success">
+					<td colspan="2">遊戲勝利條件</td>
+				</tr>
+				<tr class="active">
+					<td colspan="2">在開始配種貓咪後，如果所有貓咪都離開，遊戲會直接結束。</td>
+				</tr>
+				<tr class="danger">
+					<td colspan="2">遊戲失敗條件</td>
+				</tr>
+				<tr class="active">
+					<td colspan="2">在開始配種貓咪後，如果所有貓咪都離開，遊戲會直接結束。</td>
+				</tr>
+			</tbody>
+		</table>
 	</div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
