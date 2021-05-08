@@ -1,4 +1,6 @@
 
+var maxIdleTime = 10000;
+
 /**
  * 目前擁有的貓咪陣列
  * @type {Array.<Cat>} 
@@ -15,8 +17,8 @@ $(document).ready(function(){
 		"<span>" + targetCat.info + "</span>" +
 		"<input type='hidden' value='" + targetCat.code + "' />" 
 	);
+	idleTime = maxIdleTime;
 });
-
 
 /**
  * 貓咪設定
@@ -256,6 +258,24 @@ function getRandom(max) {
 	return Math.floor(Math.random() * 100 % max);
 }
 
+var currentTimeout = undefined;
+/**
+ * 設定閒置時間
+ */
+function setIdleTime() {
+	currentTimeout = setTimeout(function(){
+		idleTime -= 1000;
+		if(idleTime <= 0) {
+			switchCatAction();
+			currentTimeout = undefined;
+			idleTime = maxIdleTime;
+			setIdleTime();
+		}
+		if(currentTimeout){
+			setIdleTime();
+		}
+	}, 1000);
+}
 
 /**
  * 創造貓咪
@@ -330,7 +350,7 @@ function showCat(targetHtmlId) {
 			$("#SwitchBtn").addClass("hide");
 		}
 	} else {
-		var array = createCat(5);
+		var array = createCat(3);
 		$.each(array, function(idx, item) {
 			jqTarget.append(item.radioHtml);
 		});
@@ -347,40 +367,9 @@ function showCat(targetHtmlId) {
 function showCurrentCat(targetHtmlId) {
 	$("#CurrentBox").removeClass("hide");
 	$("#CurrentLine").removeClass("hide");
-	var jqBox = $("#CurrentBox").find("div.cat-box");
-	if(jqBox.length == 0) {
-		throw new Error("Invalid current box: CurrentBox");
-	}
-	jqBox.empty();
-	if(catArray.length == 0) {
-		return;
-	}
 	var healthCatCount = 0;
 	var hasFather = false, hasMother = false, hasTarget = false;
 	$.each(catArray, function(idx, item) {
-		item.catTitle = "這是一隻";
-		var bkClass = "";
-		if(item.code == targetCat.code) {
-			hasTarget = true;
-			bkClass = "cat-action";
-		}
-		if(idx < catArray.length - 1) {
-			var htmlId = "Box" + item.htmlId;
-			jqBox.append(
-				"<div class='box " + bkClass + "'>" +
-				item.checkboxHtml +
-				"<div id='" + htmlId + "'>" + //  class='cat-action'
-				item.getAction() +
-				"</div>" + 
-				"</div>"
-			);
-		} else {
-			jqBox.append(
-				"<div class='box " + bkClass + "'>" +
-				item.checkboxHtml +
-				"</div>"
-			);
-		}
 		if(item.mateCount == catSetting.baseMateCount) {
 			healthCatCount++;
 		}
@@ -392,26 +381,69 @@ function showCurrentCat(targetHtmlId) {
 		}
 	});
 	if(healthCatCount >= maxHealthCatCount && (!hasFather || !hasMother)) {
-		if($(".toolbox").hasClass("hide")) {
-			if(!$(".toolbox").find(".cat-clear").hasClass("hide") ||
-				!$(".toolbox").find(".cat-change").hasClass("hide")) {
-				$(".toolbox").removeClass("hide");
-			} else {
-				alert("你的道具都用完了，也沒有貓咪可以配種了，繁殖貓咪失敗！");
-				if($("#RefreshBtn").hasClass("hide")) {
-					$("#RefreshBtn").removeClass("hide");
-				}
-			}
+		$("#ToolBoxBtn").show();
+		if(!$(".toolbox").find(".cat-clear").hasClass("hide") ||
+			!$(".toolbox").find(".cat-change").hasClass("hide")) {
+			$(".toolbox").removeClass("hide");
+		} else {
+			alert("你的道具都用完了，也沒有貓咪可以配種了，繁殖貓咪失敗！");
 		}
 	} else {
-		if(!$(".toolbox").hasClass("hide")) {
-			$(".toolbox").addClass("hide");
-		}
+		$("#ToolBoxBtn").hide();
 	}
 	showCat(targetHtmlId);
 	if(hasTarget) {
 		alert("你配出目標貓咪了！");
 	}
+	//currentTimeout = undefined;
+	switchCatAction();
+	//idleTime = maxIdleTime;
+	//if(!currentTimeout){
+	//	setIdleTime();
+	//}
+}
+
+/**
+ * 切換貓咪的動作
+ */
+function switchCatAction() {
+	var jqBox = $("#CurrentBox").find("div.cat-box");
+	if(jqBox.length == 0) {
+		throw new Error("Invalid current box: CurrentBox");
+	}
+	jqBox.empty();
+	if(catArray.length == 0) {
+		return;
+	}
+	var diff = currentTimeout ? 0 : 1;
+	$.each(catArray, function(idx, item) {
+		item.catTitle = "這是一隻";
+		var bkClass = "";
+		if(item.code == targetCat.code) {
+			hasTarget = true;
+			bkClass = "cat-action";
+		}
+		if(idx < catArray.length - diff) {
+			var htmlId = "Box" + item.htmlId;
+			jqBox.append(
+				"<div class='col-sm-3 box " + bkClass + "'>" +
+				item.checkboxHtml +
+				"<div id='" + htmlId + "'>" + //  class='cat-action'
+				item.getAction() +
+				"</div>" + 
+				"</div>"
+			);
+		} else {
+			jqBox.append(
+				"<div class='col-sm-3 box " + bkClass + "'>" +
+				item.checkboxHtml +
+				"<div id='" + htmlId + "'>" + //  class='cat-action'
+				"　" +
+				"</div>" + 
+				"</div>"
+			);
+		}
+	});
 }
 
 /**
@@ -488,7 +520,7 @@ function checkCatMate(jqCheckbox){
 	if(checkboxLength > 2) {
 		jqCheckbox.prop("checked", false);
 	}
-	var jqCatMate = $("#CurrentBox").find("div.cat-mate");
+	var jqCatMate = $("#CatMateBtn");
 	if(checkboxLength >= 2) {
 		if(jqCatMate.hasClass("hide")){
 			jqCatMate.removeClass("hide");
