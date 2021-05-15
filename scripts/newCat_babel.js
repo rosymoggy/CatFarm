@@ -626,6 +626,7 @@ function findCat(code) {
 
     return cat;
   } else {
+    showCurrentCat("NewList");
     alert("Error: Cannot find code: " + code);
     throw new Error("Cannot find code: " + code);
   }
