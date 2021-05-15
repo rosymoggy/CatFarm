@@ -187,6 +187,7 @@ class Cat {
 	var splitCode = code.split("-");
   	// fur color
   	if(!$.isNumeric(splitCode[0])){
+		alert("Invalid body code.");
   		throw new Error("Invalid body code.");
   	}
   	var idxFurColor = parseInt(splitCode[0]);
@@ -194,6 +195,7 @@ class Cat {
 
   	// kind
   	if(!$.isNumeric(splitCode[1])){
+		alert("Invalid kind eye code.");
   		throw new Error("Invalid kind code.");
   	}
   	var idxKind = parseInt(splitCode[1]);
@@ -201,6 +203,7 @@ class Cat {
 
   	// left eye color
   	if(!$.isNumeric(splitCode[2])){
+		alert("Invalid left eye code.");
   		throw new Error("Invalid left eye code.");
   	}
   	var idxLeftEyeColor = parseInt(splitCode[2]);
@@ -208,6 +211,7 @@ class Cat {
 
   	// right eye color
   	if(!$.isNumeric(splitCode[3])){
+		alert("Invalid right eye code.");
   		throw new Error("Invalid right eye code.");
   	}
   	var idxRightEyeColor = parseInt(splitCode[3]);
@@ -215,6 +219,7 @@ class Cat {
 
     // fur length
   	if(!$.isNumeric(splitCode[4])){
+		alert("Invalid fur length code.");
   		throw new Error("Invalid fur length code.");
   	}
   	var idxFurLength = parseInt(splitCode[4]);
@@ -222,6 +227,7 @@ class Cat {
 
     // limb length
   	if(!$.isNumeric(splitCode[5])){
+		alert("Invalid limb length code.");
   		throw new Error("Invalid limb length code.");
   	}
   	var idxLimbLength = parseInt(splitCode[5]);
@@ -229,6 +235,7 @@ class Cat {
 
     // gender
   	if(!$.isNumeric(splitCode[6])){
+		alert("Invalid fur length code.");
   		throw new Error("Invalid fur length code.");
   	}
   	var idxGender = parseInt(splitCode[6]);
@@ -309,6 +316,7 @@ var maxHealthCatCount = 4;
 function showCat(targetHtmlId) {
 	var jqTarget = $("[id='" + targetHtmlId + "']");
 	if(jqTarget.length == 0) {
+		alert("Invalid targetHtmlId: " + targetHtmlId);
 		throw new Error("Invalid targetHtmlId: " + targetHtmlId);
 	}
 	jqTarget.empty();
@@ -407,6 +415,7 @@ function showCurrentCat(targetHtmlId) {
 function switchCatAction() {
 	var jqBox = $("#CurrentBox").find("div.cat-box");
 	if(jqBox.length == 0) {
+		alert("Invalid current box: CurrentBox");
 		throw new Error("Invalid current box: CurrentBox");
 	}
 	jqBox.empty();
@@ -449,7 +458,8 @@ function switchCatAction() {
 function switchCat(targetHtmlId) {
 	var jqNew = $("[id='NewList']");
 	if(jqNew.length == 0) {
-		throw new Error("Invalid old list: NewList");
+		alert("Invalid new list: NewList");
+		throw new Error("Invalid new list: NewList");
 	}
 	var jqChecked = jqNew.find("input[type=radio]:checked");
 	if(jqChecked.length == 0) {
@@ -490,6 +500,7 @@ function switchCat(targetHtmlId) {
 function addHistoryCat(cat) {
 	var jqOld = $("[id='OldList']");
 	if(jqOld.length == 0) {
+		alert("Invalid old list: OldList");
 		throw new Error("Invalid old list: OldList");
 	}
 
@@ -541,6 +552,7 @@ function findCat(code) {
 			tmpIdx = idx;
 		}
 	});
+	//console.log(catArray);
 	if(cat) {
 		catArray[tmpIdx].mateCount--;
 		var newCatArray = [];
@@ -555,6 +567,7 @@ function findCat(code) {
 		//}
 		return cat;
 	} else {
+		alert("Error: Cannot find code: " + code);
 		throw new Error("Cannot find code: " + code);
 	}
 }
@@ -586,36 +599,64 @@ function mateCat(targetHtmlId) {
 	// 讓小貓繼承父母基因
 	// 1. 改變設定: 眼睛顏色
 	var tmpEyeColorArray = catSetting.eyeColorArray;
-	catSetting.eyeColorArray = [ first.leftEyeColor ];
-	if(catSetting.eyeColorArray.indexOf(first.rightEyeColor) >= 0) {
+	catSetting.eyeColorArray = [first.rightEyeColor];
+	if(catSetting.eyeColorArray.indexOf(first.rightEyeColor) < 0) {
 		catSetting.eyeColorArray.push(first.rightEyeColor);
 	}
-	if(catSetting.eyeColorArray.indexOf(second.rightEyeColor) >= 0) {
+	if(catSetting.eyeColorArray.indexOf(first.leftEyeColor) < 0) {
+		catSetting.eyeColorArray.push(first.leftEyeColor);
+	}
+	if(catSetting.eyeColorArray.indexOf(second.rightEyeColor) < 0) {
 		catSetting.eyeColorArray.push(second.rightEyeColor);
 	}
-	if(catSetting.eyeColorArray.indexOf(second.leftEyeColor) >= 0) {
+	if(catSetting.eyeColorArray.indexOf(second.leftEyeColor) < 0) {
 		catSetting.eyeColorArray.push(second.leftEyeColor);
 	}
 
 	// 2. 改變設定: 身體毛髮顏色
 	var tmpFurColorArray = catSetting.furColorArray;
-	catSetting.furColorArray = [ first.furColor ];
-	if(catSetting.furColorArray.indexOf(second.furColor) >= 0) {
+	catSetting.furColorArray = [];
+	if(catSetting.furColorArray.indexOf(first.furColor) < 0) {
+		catSetting.furColorArray.push(first.furColor);
+	}
+	if(catSetting.furColorArray.indexOf(second.furColor) < 0) {
 		catSetting.furColorArray.push(second.furColor);
 	}
 
 	// 3. 改變設定: 毛髮長度
 	var tmpFurLengthArray = catSetting.furLengthArray;
-	catSetting.furLengthArray = [ first.furLength ];
-	if(catSetting.furLengthArray.indexOf(second.furLength) >= 0) {
+	catSetting.furLengthArray = [];
+	if(catSetting.furLengthArray.indexOf(first.furLength) < 0) {
+		catSetting.furLengthArray.push(first.furLength);
+	}
+	if(catSetting.furLengthArray.indexOf(second.furLength) < 0) {
 		catSetting.furLengthArray.push(second.furLength);
 	}
 
 	// 4. 改變設定: 四肢長度
 	var tmpLimbLengthArray = catSetting.limbLengthArray;
-	catSetting.limbLengthArray = [ first.limbLength ];
-	if(catSetting.limbLengthArray.indexOf(second.limbLength) >= 0) {
+	catSetting.limbLengthArray = [];
+	if(catSetting.limbLengthArray.indexOf(first.limbLength) < 0) {
+		catSetting.limbLengthArray.push(first.limbLength);
+	}
+	if(catSetting.limbLengthArray.indexOf(second.limbLength) < 0) {
 		catSetting.limbLengthArray.push(second.limbLength);
+	}
+
+	if(catSetting.eyeColorArray.length == 0) {
+		catSetting.eyeColorArray = tmpEyeColorArray;
+	}
+
+	if(catSetting.furColorArray.length == 0) {
+		catSetting.furColorArray = tmpFurColorArray;
+	}
+
+	if(catSetting.furLengthArray.length == 0) {
+		catSetting.furLengthArray = tmpFurLengthArray;
+	}
+
+	if(catSetting.limbLengthArray.length == 0) {
+		catSetting.limbLengthArray = tmpLimbLengthArray;
 	}
 
 	// 創造小貓
