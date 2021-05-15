@@ -419,7 +419,7 @@ function switchCatAction() {
 		if(item.code == targetCat.code) {
 			bkClass = "cat-action";
 		}
-		if(idx < catArray.length - diff) {
+		if(idx < catArray.length - 1) {
 			var htmlId = "Box" + item.htmlId;
 			jqBox.append(
 				"<div class='col-sm-3 box " + bkClass + "'>" +
