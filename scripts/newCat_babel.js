@@ -468,7 +468,6 @@ function switchCatAction() {
     return;
   }
 
-  var diff = currentTimeout ? 0 : 1;
   $.each(catArray, function (idx, item) {
     item.catTitle = "這是一隻";
     var bkClass = "";
