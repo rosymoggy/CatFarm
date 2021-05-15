@@ -543,9 +543,16 @@ function findCat(code) {
 	});
 	if(cat) {
 		catArray[tmpIdx].mateCount--;
-		if(catArray[tmpIdx].mateCount <= 0) {
-			catArray.splice(tmpIdx, 1);
-		}
+		var newCatArray = [];
+		$.each(catArray, function(idx, item) {
+			if(item.mateCount > 0) {
+				newCatArray.push(item);
+			}
+		});
+		catArray = newCatArray;
+		//if(catArray[tmpIdx].mateCount <= 0) {
+		//	catArray.splice(tmpIdx, 1);
+		//}
 		return cat;
 	} else {
 		throw new Error("Cannot find code: " + code);
