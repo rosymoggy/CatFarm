@@ -1,6 +1,4 @@
 
-var maxIdleTime = 10000;
-
 /**
  * 目前擁有的貓咪陣列
  * @type {Array.<Cat>} 
@@ -17,7 +15,6 @@ $(document).ready(function(){
 		"<span>" + targetCat.info + "</span>" +
 		"<input type='hidden' value='" + targetCat.code + "' />" 
 	);
-	idleTime = maxIdleTime;
 });
 
 /**
@@ -258,25 +255,6 @@ function getRandom(max) {
 	return Math.floor(Math.random() * 100 % max);
 }
 
-var currentTimeout = undefined;
-/**
- * 設定閒置時間
- */
-function setIdleTime() {
-	currentTimeout = setTimeout(function(){
-		idleTime -= 1000;
-		if(idleTime <= 0) {
-			switchCatAction();
-			currentTimeout = undefined;
-			idleTime = maxIdleTime;
-			setIdleTime();
-		}
-		if(currentTimeout){
-			setIdleTime();
-		}
-	}, 1000);
-}
-
 /**
  * 創造貓咪
  * @param {number} catCount - 貓咪數量
@@ -360,6 +338,28 @@ function showCat(targetHtmlId) {
 	}
 }
 
+
+/**
+ * 比對貓咪代碼
+ * @param {string} code1 - 貓咪代碼 1
+ * @param {string} code2 - 貓咪代碼 2
+ */
+function matchCode(code1, code2) {
+	var split1 = code1.split('-');
+	var split2 = code2.split('-');
+	var isMatched = true;
+	for(var i = 0; i < split1.length; i++) {
+		if(i == 1) { // kind 跳過
+			continue;
+		}
+		if(split1[i] != split2[i]) {
+			isMatched = false;
+			break;
+		}
+	}
+	return isMatched;
+}
+
 /**
  * 列出目前擁有的貓咪
  * @param {string} targetHtmlId - 目標 html id
@@ -370,6 +370,9 @@ function showCurrentCat(targetHtmlId) {
 	var healthCatCount = 0;
 	var hasFather = false, hasMother = false, hasTarget = false;
 	$.each(catArray, function(idx, item) {
+		if(matchCode(item.code, targetCat.code)) {
+			hasTarget = true;
+		}
 		if(item.mateCount == catSetting.baseMateCount) {
 			healthCatCount++;
 		}
@@ -395,12 +398,7 @@ function showCurrentCat(targetHtmlId) {
 	if(hasTarget) {
 		alert("你配出目標貓咪了！");
 	}
-	//currentTimeout = undefined;
 	switchCatAction();
-	//idleTime = maxIdleTime;
-	//if(!currentTimeout){
-	//	setIdleTime();
-	//}
 }
 
 /**
@@ -420,7 +418,6 @@ function switchCatAction() {
 		item.catTitle = "這是一隻";
 		var bkClass = "";
 		if(item.code == targetCat.code) {
-			hasTarget = true;
 			bkClass = "cat-action";
 		}
 		if(idx < catArray.length - diff) {
@@ -572,7 +569,58 @@ function mateCat(targetHtmlId) {
 		alert("貓咪不能多元成家，請選擇兩隻不同性別的貓。");
 		return;
 	}
+
+	// 判斷父母是否皆為短腳貓
+	if(first.limbLength == second.limbLength && first.limbLength == "短") {
+		alert("配種失敗，小貓咪因故直接離開繁殖場。（短腳貓和短腳貓配種時，會因為發育不全而死亡）");
+		showCurrentCat(targetHtmlId);
+		return;
+	}
+
+	// 讓小貓繼承父母基因
+	// 1. 改變設定: 眼睛顏色
+	var tmpEyeColorArray = catSetting.eyeColorArray;
+	catSetting.eyeColorArray = [ first.leftEyeColor ];
+	if(catSetting.eyeColorArray.indexOf(first.rightEyeColor) >= 0) {
+		catSetting.eyeColorArray.push(first.rightEyeColor);
+	}
+	if(catSetting.eyeColorArray.indexOf(second.rightEyeColor) >= 0) {
+		catSetting.eyeColorArray.push(second.rightEyeColor);
+	}
+	if(catSetting.eyeColorArray.indexOf(second.leftEyeColor) >= 0) {
+		catSetting.eyeColorArray.push(second.leftEyeColor);
+	}
+
+	// 2. 改變設定: 身體毛髮顏色
+	var tmpFurColorArray = catSetting.furColorArray;
+	catSetting.furColorArray = [ first.furColor ];
+	if(catSetting.furColorArray.indexOf(second.furColor) >= 0) {
+		catSetting.furColorArray.push(second.furColor);
+	}
+
+	// 3. 改變設定: 毛髮長度
+	var tmpFurLengthArray = catSetting.furLengthArray;
+	catSetting.furLengthArray = [ first.furLength ];
+	if(catSetting.furLengthArray.indexOf(second.furLength) >= 0) {
+		catSetting.furLengthArray.push(second.furLength);
+	}
+
+	// 4. 改變設定: 四肢長度
+	var tmpLimbLengthArray = catSetting.limbLengthArray;
+	catSetting.limbLengthArray = [ first.limbLength ];
+	if(catSetting.limbLengthArray.indexOf(second.limbLength) >= 0) {
+		catSetting.limbLengthArray.push(second.limbLength);
+	}
+
+	// 創造小貓
 	var kitty = new Cat("", 1);
+
+	// 5. 回復設定: 1-4
+	catSetting.eyeColorArray = tmpEyeColorArray;
+	catSetting.furColorArray = tmpFurColorArray;
+	catSetting.furLengthArray = tmpFurLengthArray;
+	catSetting.limbLengthArray = tmpLimbLengthArray;
+
 	catArray.push(kitty);
 	addHistoryCat(kitty);
 
@@ -593,6 +641,7 @@ function clearCat(targetHtmlId) {
 	if(!$(".toolbox").find(".cat-clear").hasClass("hide")) {
 		$(".toolbox").find(".cat-clear").addClass("hide");
 	}
+	$("#KeepBtn").click();
 }
 
 /**
@@ -614,4 +663,5 @@ function changeCat(targetHtmlId) {
 	if(!$(".toolbox").find(".cat-change").hasClass("hide")) {
 		$(".toolbox").find(".cat-change").addClass("hide");
 	}
+	$("#KeepBtn").click();
 }
